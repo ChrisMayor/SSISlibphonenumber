@@ -1,4 +1,4 @@
-# SSIS Libphonenumber
+# SSIS LibPhonenumber - A phone number parsing and normalization SSIS Pipeline Component
 SSIS pipeline transformation shape, which provides some phone number parsing functionality by implementing the Google libphonenumber csharp port https://github.com/twcclegg/libphonenumber-csharp
 
 Highlights:
