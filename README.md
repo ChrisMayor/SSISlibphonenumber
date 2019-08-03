@@ -6,3 +6,6 @@ Highlights:
 * SSIS Pipeline transformation shape
 * Googles libphonenumber is great - runs on premise and also on your android phone (see https://github.com/google/libphonenumber)
 * Transform your unformatted phone numbers to a normalized format (e.g. for your CRM system or for skype integration...)
+
+Currently implemented functionality:
+* 
