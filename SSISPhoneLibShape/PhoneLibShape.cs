@@ -232,13 +232,13 @@ namespace SSISPhoneLibShape
                         if (BufferColDataType == DataType.DT_STR ||
                             BufferColDataType == DataType.DT_WSTR)
                         {
-                            IsValid = IsCreditCardValid(buffer.GetString(inputBufferColumnIndex[x]));
+                            IsValid = IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[x]));
                         }
                         else if (BufferColDataType == DataType.DT_NUMERIC ||
                                 BufferColDataType == DataType.DT_DECIMAL)
                         {
 
-                            IsValid = IsCreditCardValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString());
+                            IsValid = IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString());
                         }
 
 
@@ -256,36 +256,9 @@ namespace SSISPhoneLibShape
 
 
         //Luhn mod10 algorithm to check credit card number
-        public bool IsCreditCardValid(string cardNumber)
+        public bool IsPhoneNumberValid(string phoneNumber)
         {
-            const string allowed = "0123456789";
-            int i;
-
-            StringBuilder cleanNumber = new StringBuilder();
-            for (i = 0; i < cardNumber.Length; i++)
-            {
-                if (allowed.IndexOf(cardNumber.Substring(i, 1)) >= 0)
-                    cleanNumber.Append(cardNumber.Substring(i, 1));
-            }
-            if (cleanNumber.Length < 13 || cleanNumber.Length > 16)
-                return false;
-
-            for (i = cleanNumber.Length + 1; i <= 16; i++)
-                cleanNumber.Insert(0, "0");
-
-            int multiplier, digit, sum, total = 0;
-            string number = cleanNumber.ToString();
-
-            for (i = 1; i <= 16; i++)
-            {
-                multiplier = 1 + (i % 2);
-                digit = int.Parse(number.Substring(i - 1, 1));
-                sum = digit * multiplier;
-                if (sum > 9)
-                    sum -= 9;
-                total += sum;
-            }
-            return (total % 10 == 0);
+            return true;
         }
 
 
