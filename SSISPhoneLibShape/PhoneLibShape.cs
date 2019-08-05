@@ -10,7 +10,7 @@ using Microsoft.SqlServer.Dts.Runtime;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using plib = PhoneNumbers;
+using PhoneNumbers;
 
 namespace SSISPhoneLibShape
 {
@@ -116,7 +116,7 @@ namespace SSISPhoneLibShape
                 bool IsExist = false;
                 foreach (IDTSOutputColumn100 OutputColumn in output.OutputColumnCollection)
                 {
-                    if (OutputColumn.Name == "IsValidCCN " + inputcolumn.Name)
+                    if (OutputColumn.Name == "IsValidNumber " + inputcolumn.Name)
                     {
                         IsExist = true;
                     }
@@ -125,8 +125,8 @@ namespace SSISPhoneLibShape
                 if (!IsExist)
                 {
                     IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
-                    outputcol.Name = "IsValidCCN " + inputcolumn.Name;
-                    outputcol.Description = "Indicates whether " + inputcolumn.Name + " is a Valid Credit Card Number";
+                    outputcol.Name = "IsValidNumber " + inputcolumn.Name;
+                    outputcol.Description = "Indicates whether " + inputcolumn.Name + " is a Valid Phone Number";
                     outputcol.SetDataTypeProperties(DataType.DT_BOOL, 0, 0, 0, 0);
                 }
             }
@@ -185,7 +185,6 @@ namespace SSISPhoneLibShape
             ComponentMetaData.FireError(0, ComponentMetaData.Name, "Output columns cannot be added to " + ComponentMetaData.Name, "", 0, out cancel);
             //bubble-up the error to VS
             throw new Exception("Output columns cannot be added to " + ComponentMetaData.Name, null);
-            return null;
         }
 
         #endregion Design Time Methods
@@ -258,7 +257,25 @@ namespace SSISPhoneLibShape
         //Luhn mod10 algorithm to check credit card number
         public bool IsPhoneNumberValid(string phoneNumber)
         {
-            return true;
+            var phoneNumberUtil = PhoneNumberUtil.GetInstance();
+            var isViablePhoneNumber = PhoneNumberUtil.IsViablePhoneNumber(phoneNumber);
+            var extractPossibleNumber = PhoneNumberUtil.ExtractPossibleNumber(phoneNumber);
+            var normalizedNumber = PhoneNumberUtil.Normalize(phoneNumber);
+            var normalizedDigitsOnly = PhoneNumberUtil.NormalizeDigitsOnly(phoneNumber);
+            if (isViablePhoneNumber)
+            {
+                var paredNumber = phoneNumberUtil.Parse(phoneNumber, "DE");
+                var e164Format = phoneNumberUtil.Format(paredNumber, PhoneNumberFormat.E164);
+                var intFormat = phoneNumberUtil.Format(paredNumber, PhoneNumberFormat.INTERNATIONAL);
+                var isValidNumber = phoneNumberUtil.IsValidNumber(paredNumber);
+                var countryCode = paredNumber.CountryCode;
+                var hasCountryCode = paredNumber.HasCountryCode;
+                var preferredDomesticCarrierCode = paredNumber.PreferredDomesticCarrierCode;
+                var geocoder = PhoneNumbers.PhoneNumberOfflineGeocoder.GetInstance();
+                var description = geocoder.GetDescriptionForNumber(paredNumber, PhoneNumbers.Locale.English);
+            }
+
+            return isViablePhoneNumber;
         }
 
 
