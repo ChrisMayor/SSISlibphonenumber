@@ -214,7 +214,7 @@ namespace SSISPhoneLibShape
 
         }
 
-        //Run Time - Validate Credit Card
+        //Run Time - Validate Phone Number
         public override void ProcessInput(int inputID, PipelineBuffer buffer)
         {
             if (!buffer.EndOfRowset)
@@ -231,13 +231,13 @@ namespace SSISPhoneLibShape
                         if (BufferColDataType == DataType.DT_STR ||
                             BufferColDataType == DataType.DT_WSTR)
                         {
-                            IsValid = IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[x]));
+                            IsValid = IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[x])).IsViablePhoneNumber.Value;
                         }
                         else if (BufferColDataType == DataType.DT_NUMERIC ||
                                 BufferColDataType == DataType.DT_DECIMAL)
                         {
 
-                            IsValid = IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString());
+                            IsValid = IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString()).IsViablePhoneNumber.Value;
                         }
 
 
@@ -254,28 +254,30 @@ namespace SSISPhoneLibShape
 
 
 
-        //Luhn mod10 algorithm to check credit card number
-        public bool IsPhoneNumberValid(string phoneNumber)
+        //phonelib calls
+        public ParsedPhoneNumber IsPhoneNumberValid(string phoneNumber)
         {
+            var parsedNumber = new ParsedPhoneNumber();
+
             var phoneNumberUtil = PhoneNumberUtil.GetInstance();
-            var isViablePhoneNumber = PhoneNumberUtil.IsViablePhoneNumber(phoneNumber);
-            var extractPossibleNumber = PhoneNumberUtil.ExtractPossibleNumber(phoneNumber);
-            var normalizedNumber = PhoneNumberUtil.Normalize(phoneNumber);
-            var normalizedDigitsOnly = PhoneNumberUtil.NormalizeDigitsOnly(phoneNumber);
-            if (isViablePhoneNumber)
+            parsedNumber.IsViablePhoneNumber = PhoneNumberUtil.IsViablePhoneNumber(phoneNumber);
+            parsedNumber.ExtractPossibleNumber = PhoneNumberUtil.ExtractPossibleNumber(phoneNumber);
+            parsedNumber.NormalizedNumber = PhoneNumberUtil.Normalize(phoneNumber);
+            parsedNumber.NormalizedDigitsOnly = PhoneNumberUtil.NormalizeDigitsOnly(phoneNumber);
+            if (parsedNumber.IsViablePhoneNumber.Value)
             {
-                var paredNumber = phoneNumberUtil.Parse(phoneNumber, "DE");
-                var e164Format = phoneNumberUtil.Format(paredNumber, PhoneNumberFormat.E164);
-                var intFormat = phoneNumberUtil.Format(paredNumber, PhoneNumberFormat.INTERNATIONAL);
-                var isValidNumber = phoneNumberUtil.IsValidNumber(paredNumber);
-                var countryCode = paredNumber.CountryCode;
-                var hasCountryCode = paredNumber.HasCountryCode;
-                var preferredDomesticCarrierCode = paredNumber.PreferredDomesticCarrierCode;
+                var numberObject = phoneNumberUtil.Parse(phoneNumber, "DE");
+                parsedNumber.E164Format = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.E164);
+                parsedNumber.IntFormat = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.INTERNATIONAL);
+                parsedNumber.IsValidNumber = phoneNumberUtil.IsValidNumber(numberObject);
+                parsedNumber.CountryCode = numberObject.CountryCode;
+                parsedNumber.HasCountryCode = numberObject.HasCountryCode;
+                parsedNumber.PreferredDomesticCarrierCode = numberObject.PreferredDomesticCarrierCode;
                 var geocoder = PhoneNumbers.PhoneNumberOfflineGeocoder.GetInstance();
-                var description = geocoder.GetDescriptionForNumber(paredNumber, PhoneNumbers.Locale.English);
+                parsedNumber.GeoCoderDescription = geocoder.GetDescriptionForNumber(numberObject, PhoneNumbers.Locale.English);
             }
 
-            return isViablePhoneNumber;
+            return parsedNumber;
         }
 
 
