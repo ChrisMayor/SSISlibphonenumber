@@ -43,7 +43,7 @@ namespace SSISPhoneLibShape
             }
 
             //txtNullValuesTable.Text =
-            //    ComponentMetaData.CustomPropertyCollection["NullDefaultTableName"].Value.ToString();
+            //    ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value.ToString();
 
             _populatingList = false;
             chkInputColumns.Visible = true;
@@ -53,8 +53,38 @@ namespace SSISPhoneLibShape
         {
             if (_column != null)
             {
-                //UpdateProperties(_column);
+                    //Utility.SetPropertyValue(_column, "PhoneNumberValidation", true);
+    
             }
+        }
+
+        private void ChkInputColumns_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (_populatingList)
+            {
+                return;
+            }
+
+            IDTSVirtualInput100 virtualInput = ComponentMetaData.InputCollection[0].GetVirtualInput();
+
+            int selectedItemLineageId = _columnInfo[(string)chkInputColumns.Items[e.Index]];
+            if (e.NewValue == CheckState.Checked)
+            {
+                virtualInput.SetUsageType(selectedItemLineageId, DTSUsageType.UT_READWRITE);
+                //var column = ComponentMetaData.InputCollection[0].InputColumnCollection.GetInputColumnByLineageID(selectedItemLineageId);
+                //Utility.AddColumnProperties(column);
+            }
+            else
+            {
+                var column = ComponentMetaData.InputCollection[0].InputColumnCollection.GetInputColumnByLineageID(selectedItemLineageId);
+                //Utility.RemoveColumnProperties(column);
+                virtualInput.SetUsageType(selectedItemLineageId, DTSUsageType.UT_IGNORED);
+            }
+        }
+
+        private void ChkInputColumns_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

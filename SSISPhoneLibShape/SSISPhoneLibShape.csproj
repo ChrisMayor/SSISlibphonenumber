@@ -88,6 +88,7 @@
       <DependentUpon>SSISPhoneLibDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="SSISPhoneLibUi.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mc.snk" />

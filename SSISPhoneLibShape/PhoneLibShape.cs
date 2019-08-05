@@ -17,7 +17,8 @@ namespace SSISPhoneLibShape
 
     [DtsPipelineComponent(DisplayName = "PhoneLibShape",
     ComponentType = ComponentType.Transform,
-    CurrentVersion = 1)]
+    CurrentVersion = 1,
+    UITypeName = "SSISPhoneLibShape.SSISPhoneLibUi, SSISPhoneLibShape, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a232ba076cd66dc8")]
     public class PhoneLibShape : PipelineComponent
     {
 
@@ -52,6 +53,9 @@ namespace SSISPhoneLibShape
             IDTSOutput100 errorOutput = ComponentMetaData.OutputCollection.New();
             errorOutput.Name = "Error";
             errorOutput.IsErrorOut = true;
+
+            // Add Null Default Table Name
+            Utility.AddProperty(ComponentMetaData.CustomPropertyCollection, "CustomProperties", "Custom Metadata Properties", string.Empty);
         }
 
         //Design time - Metadata Validataor
@@ -94,6 +98,15 @@ namespace SSISPhoneLibShape
 
             }
 
+            // Validate Metadata
+            if (ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value == null ||
+                    ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value.ToString() == string.Empty)
+            {
+                ComponentMetaData.FireError(0, string.Empty, "The NullDefaultTableName property must be set.", string.Empty, 0, out cancel);
+                cancel = true;
+                return DTSValidationStatus.VS_NEEDSNEWMETADATA;
+            }
+
             //validate input to be of type string/numeric only
             for (int x = 0; x < input.InputColumnCollection.Count; x++)
             {
@@ -116,7 +129,7 @@ namespace SSISPhoneLibShape
                 bool IsExist = false;
                 foreach (IDTSOutputColumn100 OutputColumn in output.OutputColumnCollection)
                 {
-                    if (OutputColumn.Name == "IsValidNumber " + inputcolumn.Name)
+                    if (OutputColumn.Name == "PhoneLib_IsValidNumber " + inputcolumn.Name)
                     {
                         IsExist = true;
                     }
@@ -125,7 +138,7 @@ namespace SSISPhoneLibShape
                 if (!IsExist)
                 {
                     IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
-                    outputcol.Name = "IsValidNumber " + inputcolumn.Name;
+                    outputcol.Name = "PhoneLib_IsValidNumber " + inputcolumn.Name;
                     outputcol.Description = "Indicates whether " + inputcolumn.Name + " is a Valid Phone Number";
                     outputcol.SetDataTypeProperties(DataType.DT_BOOL, 0, 0, 0, 0);
                 }
@@ -134,19 +147,19 @@ namespace SSISPhoneLibShape
             //Remove redundant output columns that don't match input columns
             if (output.OutputColumnCollection.Count > input.InputColumnCollection.Count)
             {
-                foreach (IDTSOutputColumn100 OutputColumn in output.OutputColumnCollection)
+                foreach (IDTSOutputColumn100 outputColumn in output.OutputColumnCollection)
                 {
                     Boolean IsRedundant = true;
-                    foreach (IDTSInputColumn100 InputCoulmn in input.InputColumnCollection)
+                    foreach (IDTSInputColumn100 inputCoulmn in input.InputColumnCollection)
                     {
-                        IsRedundant = OutputColumn.Name.Contains(InputCoulmn.Name) ? false : true;
+                        IsRedundant = outputColumn.Name.Equals("PhoneLib_IsValidNumber " + inputCoulmn.Name) ? false : true;
                         if (!IsRedundant)
                             break;
                     }
 
                     if (IsRedundant)
                     {
-                        output.OutputColumnCollection.RemoveObjectByID(OutputColumn.ID);
+                        output.OutputColumnCollection.RemoveObjectByID(outputColumn.ID);
                     }
                 }
             }
