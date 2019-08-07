@@ -17,7 +17,6 @@ namespace SSISPhoneLibShape
 
     [DtsPipelineComponent(DisplayName = "PhoneLibShape",
     ComponentType = ComponentType.Transform,
-    CurrentVersion = 1,
     UITypeName = "SSISPhoneLibShape.SSISPhoneLibUi, SSISPhoneLibShape, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a232ba076cd66dc8")]
     public class PhoneLibShape : PipelineComponent
     {
@@ -31,31 +30,46 @@ namespace SSISPhoneLibShape
         //Design time - constructor
         public override void ProvideComponentProperties()
         {
-            // Set component information
+            /*// Set component information
             ComponentMetaData.Name = "PhoneLibShape";
             ComponentMetaData.Description = "A SSIS Data Flow Transformation Component to provide funtionality from Google lib phonenumbers csharp port.";
-            ComponentMetaData.ContactInfo = "ChrisMayor @ Github";
+            ComponentMetaData.ContactInfo = "ChrisMayor at Github";
 
 
-            // Reset the component.
-            base.RemoveAllInputsOutputsAndCustomProperties();
-
-            // Add input objects
-            IDTSInput100 input = ComponentMetaData.InputCollection.New();
-            input.Name = "Input";
-
-            // Add output objects.
-            IDTSOutput100 output = ComponentMetaData.OutputCollection.New();
-            output.Name = "Output";
-            output.SynchronousInputID = input.ID; //Synchronous transformation
-
-            //Add error objects
-            IDTSOutput100 errorOutput = ComponentMetaData.OutputCollection.New();
-            errorOutput.Name = "Error";
-            errorOutput.IsErrorOut = true;
 
             // Add Null Default Table Name
-            Utility.AddProperty(ComponentMetaData.CustomPropertyCollection, "CustomProperties", "Custom Metadata Properties", string.Empty);
+            //Utility.AddProperty(ComponentMetaData.CustomPropertyCollection, "CustomProperties", "Custom Metadata Properties", string.Empty);*/
+
+            ComponentMetaData.Name = "PhoneLibShape";
+            ComponentMetaData.Description = "A SSIS Data Flow Transformation Component to provide funtionality from Google lib phonenumbers csharp port.";
+            ComponentMetaData.ContactInfo = "ChrisMayor at Github";
+
+            base.RemoveAllInputsOutputsAndCustomProperties();
+
+            // Add a single input
+            var input = this.ComponentMetaData.InputCollection.New();
+            input.Name = "Input";
+            input.Description = "Input for the PhoneLib transformation";
+            input.HasSideEffects = false; // Determines if component is left in data flow when run in OptimizedMode and output is not connected
+            input.ErrorRowDisposition = DTSRowDisposition.RD_RedirectRow;
+            input.ErrorOrTruncationOperation = "ValidationFailure";
+
+            // Add a synchronous output
+            var output = this.ComponentMetaData.OutputCollection.New();
+            output.Name = "Output";
+            output.Description = "Output for the PhoneLib transformation";
+            output.HasSideEffects = false; // Determines if component is left in data flow when run in OptimizedMode and output is not connected
+            output.SynchronousInputID = input.ID;
+            output.ExclusionGroup = 1;
+
+            // Add an error output
+            var errorOutput = this.ComponentMetaData.OutputCollection.New();
+            errorOutput.IsErrorOut = true;
+            errorOutput.Name = "Error Output";
+            errorOutput.Description = "Error Output for the PhoneLib transformation";
+            errorOutput.HasSideEffects = false; // Determines if component is left in data flow when run in OptimizedMode and output is not connected
+            errorOutput.SynchronousInputID = input.ID;
+            errorOutput.ExclusionGroup = 1;
         }
 
         //Design time - Metadata Validataor
@@ -71,11 +85,11 @@ namespace SSISPhoneLibShape
             }
 
             // Validate number of outputs.
-            if (ComponentMetaData.OutputCollection.Count != 1)
-            {
-                ComponentMetaData.FireError(0, ComponentMetaData.Name, "Incorrect number of outputs.", "", 0, out pbCancel);
-                return DTSValidationStatus.VS_ISCORRUPT;
-            }
+            //if (ComponentMetaData.OutputCollection.Count != 1)
+            //{
+            //    ComponentMetaData.FireError(0, ComponentMetaData.Name, "Incorrect number of outputs.", "", 0, out pbCancel);
+            //    return DTSValidationStatus.VS_ISCORRUPT;
+            //}
 
             // Determine whether the metdada needs refresh
             IDTSInput100 input = ComponentMetaData.InputCollection[0];
@@ -98,14 +112,14 @@ namespace SSISPhoneLibShape
 
             }
 
-            // Validate Metadata
-            if (ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value == null ||
-                    ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value.ToString() == string.Empty)
-            {
-                ComponentMetaData.FireError(0, string.Empty, "The NullDefaultTableName property must be set.", string.Empty, 0, out cancel);
-                cancel = true;
-                return DTSValidationStatus.VS_NEEDSNEWMETADATA;
-            }
+            //// Validate Metadata
+            //if (ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value == null ||
+            //        ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value.ToString() == string.Empty)
+            //{
+            //    ComponentMetaData.FireError(0, string.Empty, "The NullDefaultTableName property must be set.", string.Empty, 0, out cancel);
+            //    cancel = true;
+            //    return DTSValidationStatus.VS_NEEDSNEWMETADATA;
+            //}
 
             //validate input to be of type string/numeric only
             for (int x = 0; x < input.InputColumnCollection.Count; x++)

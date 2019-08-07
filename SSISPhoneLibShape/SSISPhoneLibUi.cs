@@ -34,7 +34,7 @@ namespace SSISPhoneLibShape
             propertiesEditor.ServiceProvider = _sp;
             ////propertiesEditor.Variables = variables;
 
-            return propertiesEditor.ShowDialog(parentWindow) == DialogResult.OK;
+            return true; // propertiesEditor.ShowDialog(parentWindow) == DialogResult.OK;
         }
 
         public void Help(IWin32Window parentWindow)
