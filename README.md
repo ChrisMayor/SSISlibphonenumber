@@ -28,6 +28,12 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * PreferredDomesticCarrierCode
 * GeoCoderDescription (GeoCoder)
 
+## To do
+* Implement additional functionality of libphonenumber
+* Implement SSIS UI
+* Refactor
+* Release V1.0
+
 ## Work done:
 * Added Gac cmd script
 * Wrote a lot of code
