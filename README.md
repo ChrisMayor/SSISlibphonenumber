@@ -31,7 +31,7 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 ## Work done:
 * Added Gac cmd script
 * Wrote a lot of code
-* Did first Tests in SSIS
+* Did first tests in SSIS
 * Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
 * Prepared the SSIS UI
 
