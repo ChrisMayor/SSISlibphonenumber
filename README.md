@@ -35,6 +35,12 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
 * Prepared the SSIS UI
 
+## Screenshot V0.1
+
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V0.1.jpg" title="SSIS Dataflow with shape V0.1">
+</p>
+
 ## Install Instructions:
 * Run gacinstall.com from bin/debug or bin/release --> Will install the shape and the signed phonelib assembly to GAC and adds the shape to SSIS
 
