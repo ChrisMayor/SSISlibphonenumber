@@ -9,7 +9,7 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * SSIS Pipeline transformation shape
 * Googles libphonenumber is great - runs on premise and also on your android phone (see https://github.com/google/libphonenumber)
 * Transform your unformatted phone numbers to a normalized format (e.g. for your CRM system or for skype integration...)
-* Tries to parse strings to phone numbers
+* Tries to parse strings to phone numbers for national and international numbers
 * Can lookup the carrier code and offline geo location
 * Tested with Visual Studio 2019 SSIS Extension
 
