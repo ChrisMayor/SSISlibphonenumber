@@ -24,6 +24,7 @@ namespace SSISPhoneLibShape
         private bool areInputColumnsValid = true;
         private int[] inputBufferColumnIndex;
         private int[] outputBufferColumnIndex;
+        private int _outputId;
 
         #region Design Time Methods
 
@@ -239,6 +240,8 @@ namespace SSISPhoneLibShape
                 outputBufferColumnIndex[x] = BufferManager.FindColumnByLineageID(input.Buffer, outcol.LineageID);
             }
 
+            _outputId = output.ID;
+
         }
 
         //Run Time - Validate Phone Number
@@ -270,6 +273,8 @@ namespace SSISPhoneLibShape
 
 
                         buffer.SetBoolean(outputBufferColumnIndex[x], IsValid);
+
+                        buffer.DirectRow(_outputId);
                     }
                 }
             }
