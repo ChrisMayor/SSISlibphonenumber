@@ -13,10 +13,8 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * Can lookup the carrier code and offline geo location
 * Tested with Visual Studio 2019 SSIS Extension
 
-## Currently implemented functionality V0.01:
+## Currently implemented functionality V0.2:
 * Call to IsViablePhoneNumber to check if the phone number is viable
-
-## Planned implementation of functionality from libphonenumber for V1.0:
 * ExtractPossibleNumber
 * NormalizedNumber
 * NormalizedDigitsOnly
@@ -29,7 +27,6 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * GeoCoderDescription (GeoCoder)
 
 ## To do
-* Implement additional functionality of libphonenumber
 * Implement SSIS UI
 * Refactor
 * Release V1.0
