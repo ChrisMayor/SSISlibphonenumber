@@ -77,6 +77,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PhoneLibMethodConstants.cs" />
+    <Compile Include="OutputColumn.cs" />
     <Compile Include="ParsedPhoneNumber.cs" />
     <Compile Include="PhoneLibShape.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

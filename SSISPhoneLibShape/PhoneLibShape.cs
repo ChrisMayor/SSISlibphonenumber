@@ -11,6 +11,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using PhoneNumbers;
+using System.Linq;
 
 namespace SSISPhoneLibShape
 {
@@ -25,6 +26,7 @@ namespace SSISPhoneLibShape
         private int[] inputBufferColumnIndex;
         private int[] outputBufferColumnIndex;
         private int _outputId;
+        private List<OutputColumn> _outputColumnList;
 
         #region Design Time Methods
 
@@ -141,46 +143,22 @@ namespace SSISPhoneLibShape
 
             foreach (IDTSInputColumn100 inputcolumn in input.InputColumnCollection)
             {
-                bool IsExist = false;
-                foreach (IDTSOutputColumn100 OutputColumn in output.OutputColumnCollection)
-                {
-                    if (OutputColumn.Name == "PhoneLib_IsValidNumber " + inputcolumn.Name)
-                    {
-                        IsExist = true;
-                    }
-                }
-
-                if (!IsExist)
-                {
-                    IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
-                    outputcol.Name = "PhoneLib_IsValidNumber " + inputcolumn.Name;
-                    outputcol.Description = "Indicates whether " + inputcolumn.Name + " is a Valid Phone Number";
-                    outputcol.SetDataTypeProperties(DataType.DT_BOOL, 0, 0, 0, 0);
-                }
+                GenerateOutputColumns(output, inputcolumn);
             }
 
-            //Remove redundant output columns that don't match input columns
-            if (output.OutputColumnCollection.Count > input.InputColumnCollection.Count)
+            foreach (IDTSOutputColumn100 outputColumn in output.OutputColumnCollection)
             {
-                foreach (IDTSOutputColumn100 outputColumn in output.OutputColumnCollection)
+                if (!_outputColumnList.Any(c => c.ColumnName == outputColumn.Name))
                 {
-                    Boolean IsRedundant = true;
-                    foreach (IDTSInputColumn100 inputCoulmn in input.InputColumnCollection)
-                    {
-                        IsRedundant = outputColumn.Name.Equals("PhoneLib_IsValidNumber " + inputCoulmn.Name) ? false : true;
-                        if (!IsRedundant)
-                            break;
-                    }
-
-                    if (IsRedundant)
-                    {
-                        output.OutputColumnCollection.RemoveObjectByID(outputColumn.ID);
-                    }
+                    output.OutputColumnCollection.RemoveObjectByID(outputColumn.ID);
                 }
             }
+
 
             return DTSValidationStatus.VS_ISVALID;
         }
+
+
 
         //Design Time - method to autocorrect VS_NEEDSNEWMETADATA error
         public override void ReinitializeMetaData()
@@ -253,26 +231,13 @@ namespace SSISPhoneLibShape
                 {
                     for (int x = 0; x < inputBufferColumnIndex.Length; x++)
                     {
-                        bool IsValid = false;
                         DataType BufferColDataType;
 
                         BufferColDataType = buffer.GetColumnInfo(inputBufferColumnIndex[x]).DataType;
 
-                        if (BufferColDataType == DataType.DT_STR ||
-                            BufferColDataType == DataType.DT_WSTR)
-                        {
-                            IsValid = IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[x])).IsViablePhoneNumber.Value;
-                        }
-                        else if (BufferColDataType == DataType.DT_NUMERIC ||
-                                BufferColDataType == DataType.DT_DECIMAL)
-                        {
+                        var parsedPhoneNumberResult = GetParsedPhoneNumberResult(buffer, x, BufferColDataType);
 
-                            IsValid = IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString()).IsViablePhoneNumber.Value;
-                        }
-
-
-
-                        buffer.SetBoolean(outputBufferColumnIndex[x], IsValid);
+                        SetPhoneNumberResultValuesToOutput(buffer, x, parsedPhoneNumberResult);
 
                         buffer.DirectRow(_outputId);
                     }
@@ -281,10 +246,116 @@ namespace SSISPhoneLibShape
 
         }
 
+        private void SetPhoneNumberResultValuesToOutput(PipelineBuffer buffer, int x, ParsedPhoneNumber parsedPhoneNumberResult)
+        {
+            foreach (var outputColumn in _outputColumnList)
+            {
+                var colindex = BufferManager.FindColumnByLineageID(ComponentMetaData.InputCollection[0].Buffer, outputColumn.LinageID);
+                switch (outputColumn.Name)
+                {
+                    case PhoneLibMethodConstants.CountryCode:
+                        buffer.SetInt32(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.CountryCode);
+                        break;
+                    case PhoneLibMethodConstants.E164Format:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.E164Format);
+                        break;
+                    case PhoneLibMethodConstants.ExtractPossibleNumber:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.ExtractPossibleNumber);
+                        break;
+                    case PhoneLibMethodConstants.GeoCoderDescription:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.GeoCoderDescription);
+                        break;
+                    case PhoneLibMethodConstants.HasCountryCode:
+                        buffer.SetBoolean(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.HasCountryCode);
+                        break;
+                    case PhoneLibMethodConstants.IntFormat:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.IntFormat);
+                        break;
+                    case PhoneLibMethodConstants.IsValidNumber:
+                        buffer.SetBoolean(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.IsValidNumber);
+                        break;
+                    case PhoneLibMethodConstants.IsViablePhoneNumber:
+                        buffer.SetBoolean(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.IsViablePhoneNumber.Value);
+                        break;
+                    case PhoneLibMethodConstants.NormalizedDigitsOnly:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.NormalizedDigitsOnly);
+                        break;
+                    case PhoneLibMethodConstants.NormalizedNumber:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.NormalizedNumber);
+                        break;
+                    case PhoneLibMethodConstants.PreferredDomesticCarrierCode:
+                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.PreferredDomesticCarrierCode);
+                        break;
+                }
+
+            }
+        }
+
+        private ParsedPhoneNumber GetParsedPhoneNumberResult(PipelineBuffer buffer, int x, DataType BufferColDataType)
+        {
+            if (BufferColDataType == DataType.DT_STR ||
+                BufferColDataType == DataType.DT_WSTR)
+            {
+                return IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[x]));
+            }
+            else if (BufferColDataType == DataType.DT_NUMERIC ||
+                    BufferColDataType == DataType.DT_DECIMAL)
+            {
+
+                return IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString());
+            }
+
+            throw new Exception("Invaid DataType");
+
+        }
+
         #endregion Run Time Methods
 
+        private void GenerateOutputColumns(IDTSOutput100 output, IDTSInputColumn100 inputcolumn)
+        {
+            GeneratePhoneNumbersOutputList(inputcolumn);
+            foreach (var outputColumn in _outputColumnList)
+            {
+                GenerateOutputColumn(output, inputcolumn, outputColumn);
+            }
+        }
 
+        private static void GenerateOutputColumn(IDTSOutput100 output, IDTSInputColumn100 inputcolumn, OutputColumn outputColumn)
+        {
+            bool IsExist = false;
+            foreach (IDTSOutputColumn100 OutputColumn in output.OutputColumnCollection)
+            {
+                if (OutputColumn.Name == outputColumn.ColumnName)
+                {
+                    IsExist = true;
+                }
+            }
 
+            if (!IsExist)
+            {
+                IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
+                outputcol.Name = outputColumn.ColumnName;
+                outputcol.Description = $"PhoneLib call to {outputColumn.Name}";
+                outputcol.SetDataTypeProperties(outputColumn.DataType, 0, 0, 0, 0);
+                outputColumn.LinageID = outputcol.LineageID;
+            }
+        }
+
+        private void GeneratePhoneNumbersOutputList(IDTSInputColumn100 inputcolumn)
+        {
+            _outputColumnList = new List<OutputColumn>();
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IsViablePhoneNumber " + inputcolumn.Name, DataType = DataType.DT_BOOL, Name = PhoneLibMethodConstants.IsViablePhoneNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_ExtractPossibleNumber " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.ExtractPossibleNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NormalizedNumber " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.NormalizedNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NormalizedDigitsOnly " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.NormalizedDigitsOnly });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_E164Format " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.E164Format });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IntFormat " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.IntFormat });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IsValidNumber " + inputcolumn.Name, DataType = DataType.DT_BOOL, Name = PhoneLibMethodConstants.IsValidNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_CountryCode " + inputcolumn.Name, DataType = DataType.DT_I4, Name = PhoneLibMethodConstants.CountryCode });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_HasCountryCode " + inputcolumn.Name, DataType = DataType.DT_BOOL, Name = PhoneLibMethodConstants.HasCountryCode });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_PreferredDomesticCarrierCode " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.PreferredDomesticCarrierCode });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_GeoCoderDescription " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.GeoCoderDescription });
+        }
 
         //phonelib calls
         public ParsedPhoneNumber IsPhoneNumberValid(string phoneNumber)
