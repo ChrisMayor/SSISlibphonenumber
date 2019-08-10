@@ -12,6 +12,7 @@ SSIS pipeline transformation shape, which provides phone number parsing function
 * Tested with Visual Studio 2019 SSIS Extension
 
 ## Currently implemented functionality V0.2:
+* Ready to use - configuration with advanced editor (see screenshots)
 * Call to IsViablePhoneNumber to check if the phone number is viable
 * ExtractPossibleNumber
 * NormalizedNumber
@@ -32,7 +33,7 @@ SSIS pipeline transformation shape, which provides phone number parsing function
 ## Work done:
 * Added Gac cmd script
 * Wrote a lot of code
-* Did first tests in SSIS
+* Did tests in SSIS
 * Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
 * Prepared the SSIS UI
 * Implemented SSIS Shape
