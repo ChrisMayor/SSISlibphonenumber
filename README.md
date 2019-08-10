@@ -43,14 +43,17 @@ SSIS pipeline transformation shape, which provides phone number parsing function
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V0.2-0.JPG" title="SSIS Dataflow with shape V0.2">
 </p>
+
 ### Input Data
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V0.2-1.JPG" title="SSIS Dataflow with shape V0.2">
 </p>
+
 ### SSIS libphonenumber Output Columns (1)
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V0.2-2.JPG" title="SSIS Dataflow with shape V0.2">
 </p>
+
 ### SSIS libphonenumber Output Columns (2)
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V0.2-3.JPG" title="SSIS Dataflow with shape V0.2">
