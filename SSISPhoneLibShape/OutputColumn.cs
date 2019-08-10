@@ -13,8 +13,10 @@ namespace SSISPhoneLibShape
 
         public DataType DataType { get; set; }
 
+        public int DataTypeLength { get; set; }
+
         public string ColumnName { get; set; }
 
-        public int LinageID { get; set; }
+        public int ColumnIndex { get; set; }
     }
 }

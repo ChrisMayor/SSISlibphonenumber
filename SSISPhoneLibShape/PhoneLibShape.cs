@@ -214,6 +214,11 @@ namespace SSISPhoneLibShape
             for (int x = 0; x < output.OutputColumnCollection.Count; x++)
             {
                 IDTSOutputColumn100 outcol = output.OutputColumnCollection[x];
+                var colreference = _outputColumnList.FirstOrDefault(c => c.ColumnName == outcol.Name);
+                if (colreference != null)
+                {
+                    colreference.ColumnIndex = BufferManager.FindColumnByLineageID(input.Buffer, outcol.LineageID);
+                }
                 //This is the key - synchronous output does not appear in output buffer, but in input buffer
                 outputBufferColumnIndex[x] = BufferManager.FindColumnByLineageID(input.Buffer, outcol.LineageID);
             }
@@ -250,41 +255,48 @@ namespace SSISPhoneLibShape
         {
             foreach (var outputColumn in _outputColumnList)
             {
-                var colindex = BufferManager.FindColumnByLineageID(ComponentMetaData.InputCollection[0].Buffer, outputColumn.LinageID);
+                var colindex = outputColumn.ColumnIndex;
                 switch (outputColumn.Name)
                 {
                     case PhoneLibMethodConstants.CountryCode:
-                        buffer.SetInt32(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.CountryCode);
+                        buffer.SetInt32(colindex, parsedPhoneNumberResult.CountryCode);
                         break;
                     case PhoneLibMethodConstants.E164Format:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.E164Format);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.E164Format);
                         break;
                     case PhoneLibMethodConstants.ExtractPossibleNumber:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.ExtractPossibleNumber);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.ExtractPossibleNumber);
                         break;
                     case PhoneLibMethodConstants.GeoCoderDescription:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.GeoCoderDescription);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.GeoCoderDescription);
                         break;
                     case PhoneLibMethodConstants.HasCountryCode:
-                        buffer.SetBoolean(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.HasCountryCode);
+                        buffer.SetBoolean(colindex, parsedPhoneNumberResult.HasCountryCode);
                         break;
                     case PhoneLibMethodConstants.IntFormat:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.IntFormat);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.IntFormat);
                         break;
                     case PhoneLibMethodConstants.IsValidNumber:
-                        buffer.SetBoolean(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.IsValidNumber);
+                        buffer.SetBoolean(colindex, parsedPhoneNumberResult.IsValidNumber);
                         break;
                     case PhoneLibMethodConstants.IsViablePhoneNumber:
-                        buffer.SetBoolean(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.IsViablePhoneNumber.Value);
+                        if (parsedPhoneNumberResult.IsViablePhoneNumber.HasValue)
+                        {
+                            buffer.SetBoolean(colindex, parsedPhoneNumberResult.IsViablePhoneNumber.Value);
+                        }
+                        else
+                        {
+                            buffer.SetBoolean(colindex, false);
+                        }
                         break;
                     case PhoneLibMethodConstants.NormalizedDigitsOnly:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.NormalizedDigitsOnly);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.NormalizedDigitsOnly);
                         break;
                     case PhoneLibMethodConstants.NormalizedNumber:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.NormalizedNumber);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.NormalizedNumber);
                         break;
                     case PhoneLibMethodConstants.PreferredDomesticCarrierCode:
-                        buffer.SetString(outputBufferColumnIndex[colindex], parsedPhoneNumberResult.PreferredDomesticCarrierCode);
+                        buffer.SetString(colindex, parsedPhoneNumberResult.PreferredDomesticCarrierCode);
                         break;
                 }
 
@@ -336,48 +348,49 @@ namespace SSISPhoneLibShape
                 IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
                 outputcol.Name = outputColumn.ColumnName;
                 outputcol.Description = $"PhoneLib call to {outputColumn.Name}";
-                outputcol.SetDataTypeProperties(outputColumn.DataType, 0, 0, 0, 0);
-                outputColumn.LinageID = outputcol.LineageID;
+                outputcol.SetDataTypeProperties(outputColumn.DataType, outputColumn.DataTypeLength, 0, 0, 0);
             }
         }
 
         private void GeneratePhoneNumbersOutputList(IDTSInputColumn100 inputcolumn)
         {
             _outputColumnList = new List<OutputColumn>();
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IsViablePhoneNumber " + inputcolumn.Name, DataType = DataType.DT_BOOL, Name = PhoneLibMethodConstants.IsViablePhoneNumber });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_ExtractPossibleNumber " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.ExtractPossibleNumber });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NormalizedNumber " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.NormalizedNumber });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NormalizedDigitsOnly " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.NormalizedDigitsOnly });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_E164Format " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.E164Format });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IntFormat " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.IntFormat });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IsValidNumber " + inputcolumn.Name, DataType = DataType.DT_BOOL, Name = PhoneLibMethodConstants.IsValidNumber });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_CountryCode " + inputcolumn.Name, DataType = DataType.DT_I4, Name = PhoneLibMethodConstants.CountryCode });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_HasCountryCode " + inputcolumn.Name, DataType = DataType.DT_BOOL, Name = PhoneLibMethodConstants.HasCountryCode });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_PreferredDomesticCarrierCode " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.PreferredDomesticCarrierCode });
-            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_GeoCoderDescription " + inputcolumn.Name, DataType = DataType.DT_WSTR, Name = PhoneLibMethodConstants.GeoCoderDescription });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IsViablePhoneNumber " + inputcolumn.Name, DataType = DataType.DT_BOOL, DataTypeLength = 0, Name = PhoneLibMethodConstants.IsViablePhoneNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_ExtractPossibleNumber " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.ExtractPossibleNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NormalizedNumber " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.NormalizedNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NormalizedDigitsOnly " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.NormalizedDigitsOnly });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_E164Format " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.E164Format });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IntFormat " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.IntFormat });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_IsValidNumber " + inputcolumn.Name, DataType = DataType.DT_BOOL, DataTypeLength = 0, Name = PhoneLibMethodConstants.IsValidNumber });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_CountryCode " + inputcolumn.Name, DataType = DataType.DT_I4, DataTypeLength = 0, Name = PhoneLibMethodConstants.CountryCode });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_HasCountryCode " + inputcolumn.Name, DataType = DataType.DT_BOOL, DataTypeLength = 0, Name = PhoneLibMethodConstants.HasCountryCode });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_PreferredDomesticCarrierCode " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.PreferredDomesticCarrierCode });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_GeoCoderDescription " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.GeoCoderDescription });
         }
 
         //phonelib calls
         public ParsedPhoneNumber IsPhoneNumberValid(string phoneNumber)
         {
             var parsedNumber = new ParsedPhoneNumber();
-
-            var phoneNumberUtil = PhoneNumberUtil.GetInstance();
-            parsedNumber.IsViablePhoneNumber = PhoneNumberUtil.IsViablePhoneNumber(phoneNumber);
-            parsedNumber.ExtractPossibleNumber = PhoneNumberUtil.ExtractPossibleNumber(phoneNumber);
-            parsedNumber.NormalizedNumber = PhoneNumberUtil.Normalize(phoneNumber);
-            parsedNumber.NormalizedDigitsOnly = PhoneNumberUtil.NormalizeDigitsOnly(phoneNumber);
-            if (parsedNumber.IsViablePhoneNumber.Value)
+            if (!string.IsNullOrEmpty(phoneNumber))
             {
-                var numberObject = phoneNumberUtil.Parse(phoneNumber, "DE");
-                parsedNumber.E164Format = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.E164);
-                parsedNumber.IntFormat = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.INTERNATIONAL);
-                parsedNumber.IsValidNumber = phoneNumberUtil.IsValidNumber(numberObject);
-                parsedNumber.CountryCode = numberObject.CountryCode;
-                parsedNumber.HasCountryCode = numberObject.HasCountryCode;
-                parsedNumber.PreferredDomesticCarrierCode = numberObject.PreferredDomesticCarrierCode;
-                var geocoder = PhoneNumbers.PhoneNumberOfflineGeocoder.GetInstance();
-                parsedNumber.GeoCoderDescription = geocoder.GetDescriptionForNumber(numberObject, PhoneNumbers.Locale.English);
+                var phoneNumberUtil = PhoneNumberUtil.GetInstance();
+                parsedNumber.IsViablePhoneNumber = PhoneNumberUtil.IsViablePhoneNumber(phoneNumber);
+                parsedNumber.ExtractPossibleNumber = PhoneNumberUtil.ExtractPossibleNumber(phoneNumber);
+                parsedNumber.NormalizedNumber = PhoneNumberUtil.Normalize(phoneNumber);
+                parsedNumber.NormalizedDigitsOnly = PhoneNumberUtil.NormalizeDigitsOnly(phoneNumber);
+                if (parsedNumber.IsViablePhoneNumber.Value)
+                {
+                    var numberObject = phoneNumberUtil.Parse(phoneNumber, "DE");
+                    parsedNumber.E164Format = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.E164);
+                    parsedNumber.IntFormat = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.INTERNATIONAL);
+                    parsedNumber.IsValidNumber = phoneNumberUtil.IsValidNumber(numberObject);
+                    parsedNumber.CountryCode = numberObject.CountryCode;
+                    parsedNumber.HasCountryCode = numberObject.HasCountryCode;
+                    parsedNumber.PreferredDomesticCarrierCode = numberObject.PreferredDomesticCarrierCode;
+                    var geocoder = PhoneNumbers.PhoneNumberOfflineGeocoder.GetInstance();
+                    parsedNumber.GeoCoderDescription = geocoder.GetDescriptionForNumber(numberObject, PhoneNumbers.Locale.English);
+                }
             }
 
             return parsedNumber;
