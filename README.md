@@ -1,5 +1,3 @@
-** Currenty in work in progress - not yet ready to use **
-
 # SSIS libphonenumber - A phone number parsing and normalization SSIS Pipeline Component
 SSIS pipeline transformation shape, which provides some phone number parsing functionality by implementing the Google libphonenumber csharp port https://github.com/twcclegg/libphonenumber-csharp (v8.10.16)
 
@@ -37,8 +35,9 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * Did first tests in SSIS
 * Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
 * Prepared the SSIS UI
+* Implemented SSIS Shape
 
-## Screenshot V0.1
+## Screenshot V0.2
 
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V0.1.JPG" title="SSIS Dataflow with shape V0.1">
@@ -46,6 +45,7 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 
 ## Install Instructions:
 * Run gacinstall.com from bin/debug or bin/release --> Will install the shape and the signed phonelib assembly to GAC and adds the shape to SSIS
+* Use advanced editor on shape to map phone number input column
 
 ## Licenses:
 * From Goolgle libphonenumber and libphonenumber-csharp are preserved in git root as txt file
