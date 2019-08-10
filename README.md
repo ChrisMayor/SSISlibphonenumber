@@ -3,7 +3,8 @@ SSIS pipeline transformation shape, which provides phone number parsing function
 
 ## Highlights:
 * SQL Server 2016/2017 data flow custom Shape
-* Provides some functionality of Googles libphonenumber (using its libphonenumber-csharp port) for SQL Server 2016/2017
+* Transform, normalize, validate and geo locate your phone numbers in SSIS
+* Provides functionality of Googles libphonenumber (using its libphonenumber-csharp port) for SQL Server 2016/2017
 * SSIS Pipeline transformation shape
 * Googles libphonenumber is great - runs on premise and also on your android phone (see https://github.com/google/libphonenumber)
 * Transform your unformatted phone numbers to a normalized format (e.g. for your CRM system or for skype integration...)
@@ -29,6 +30,7 @@ SSIS pipeline transformation shape, which provides phone number parsing function
 * Implement SSIS UI
 * Refactor
 * Release V1.0
+* Implement default country code input
 
 ## Work done:
 * Added Gac cmd script
