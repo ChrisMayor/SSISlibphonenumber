@@ -40,7 +40,7 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 ## Screenshot V0.2
 
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.12.JPG" title="SSIS Dataflow with shape V0.2">
+  <img src="../master/Screenshots/1_Capture_V0.2.JPG" title="SSIS Dataflow with shape V0.2">
 </p>
 
 ## Install Instructions:
