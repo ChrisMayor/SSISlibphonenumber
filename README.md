@@ -48,7 +48,7 @@ SSIS pipeline transformation shape, which provides some phone number parsing fun
 * Use advanced editor on shape to map phone number input column
 
 ## Licenses:
-* From Goolgle libphonenumber and libphonenumber-csharp are preserved in git root as txt file
+* From Goolgles libphonenumber and libphonenumber-csharp are preserved in git root as txt file
 
 ## Disclaimer / Impressum
 
