@@ -20,6 +20,13 @@ steps:
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
+    
+- task: DownloadSecureFile@1
+  name: Microsoft.SqlServer.Dts.Design.dll
+  displayName: 'Download Microsoft.SqlServer.Dts.Design.dll'
+  inputs:
+    secureFile: 'Microsoft.SqlServer.Dts.Design.dll'
+
 
 - task: VSBuild@1
   inputs:
