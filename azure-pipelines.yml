@@ -27,7 +27,7 @@ steps:
   inputs:
     secureFile: 'Microsoft.SqlServer.Dts.Design.dll'
     
- - task: CopyFiles@2
+- task: CopyFiles@2
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
     contents: 'Microsoft.SqlServer.Dts.Design.dll'
