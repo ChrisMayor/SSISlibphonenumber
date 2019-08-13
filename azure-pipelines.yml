@@ -33,7 +33,7 @@ steps:
   inputs:
     secureFile: 'Microsoft.SqlServer.DTSPipelineWrap.dll'
     
-    - task: DownloadSecureFile@3
+- task: DownloadSecureFile@3
   name: DTSRuntimeWrap
   displayName: 'Download Microsoft.SQLServer.DTSRuntimeWrap.dll'
   inputs:
