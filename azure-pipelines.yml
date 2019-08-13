@@ -26,6 +26,13 @@ steps:
   displayName: 'Download Microsoft.SqlServer.Dts.Design.dll'
   inputs:
     secureFile: 'Microsoft.SqlServer.Dts.Design.dll'
+    
+ - task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Agent.TempDirectory)'
+    contents: 'Microsoft.SqlServer.Dts.Design.dll'
+    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLib\'
+   
 
 - task: DownloadSecureFile@1
   name: DTSPipelineWrap
