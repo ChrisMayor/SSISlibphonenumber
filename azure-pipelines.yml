@@ -31,7 +31,7 @@ steps:
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
     contents: 'Microsoft.SqlServer.Dts.Design.dll'
-    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLib\'
+    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLibShape\'
    
 
 - task: DownloadSecureFile@1
