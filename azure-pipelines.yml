@@ -22,7 +22,7 @@ steps:
     restoreSolution: '$(solution)'
     
 - task: DownloadSecureFile@1
-  name: Microsoft.SqlServer.Dts.Design.dll
+  name: DtsDesign
   displayName: 'Download Microsoft.SqlServer.Dts.Design.dll'
   inputs:
     secureFile: 'Microsoft.SqlServer.Dts.Design.dll'
