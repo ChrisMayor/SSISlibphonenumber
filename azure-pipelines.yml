@@ -27,26 +27,26 @@ steps:
   inputs:
     secureFile: 'Microsoft.SqlServer.Dts.Design.dll'
 
-- task: DownloadSecureFile@2
+- task: DownloadSecureFile@1
   name: DTSPipelineWrap
   displayName: 'Download Microsoft.SqlServer.DTSPipelineWrap.dll'
   inputs:
     secureFile: 'Microsoft.SqlServer.DTSPipelineWrap.dll'
     
-- task: DownloadSecureFile@3
+- task: DownloadSecureFile@1
   name: DTSRuntimeWrap
   displayName: 'Download Microsoft.SQLServer.DTSRuntimeWrap.dll'
   inputs:
     secureFile: 'Microsoft.SQLServer.DTSRuntimeWrap.dll'
 
 
-- task: DownloadSecureFile@4
+- task: DownloadSecureFile@1
   name: ManagedDTS
   displayName: 'Download Microsoft.SQLServer.ManagedDTS.dll'
   inputs:
     secureFile: 'Microsoft.SQLServer.ManagedDTS.dll'
 
-- task: DownloadSecureFile@5
+- task: DownloadSecureFile@1
   name: PipelineHost
   displayName: 'Download Microsoft.SqlServer.PipelineHost.dll'
   inputs:
