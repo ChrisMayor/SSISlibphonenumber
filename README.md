@@ -1,3 +1,5 @@
+<img src ="https://dev.azure.com/ich0166/SSIS%20libphonenumber/_apis/build/status/ChrisMayor.SSISlibphonenumber?branchName=master"></img>
+
 # SSIS libphonenumber - A phone number parsing and normalization SSIS Pipeline Component
 SSIS pipeline transformation shape, which provides phone number parsing functionality by implementing the Google libphonenumber csharp port https://github.com/twcclegg/libphonenumber-csharp (v8.10.16)
 
@@ -41,6 +43,7 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
 * Prepared the SSIS UI
 * Implemented SSIS Shape
+* Added Azure DevOps Pipeline build
 
 ## Screenshots V0.2
 
