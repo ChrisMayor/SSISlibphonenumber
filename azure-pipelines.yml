@@ -39,6 +39,12 @@ steps:
   displayName: 'Download Microsoft.SqlServer.DTSPipelineWrap.dll'
   inputs:
     secureFile: 'Microsoft.SqlServer.DTSPipelineWrap.dll'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Agent.TempDirectory)'
+    contents: 'Microsoft.SqlServer.DTSPipelineWrap.dll'
+    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLibShape\bin\Release\'
     
 - task: DownloadSecureFile@1
   name: DTSRuntimeWrap
@@ -46,6 +52,11 @@ steps:
   inputs:
     secureFile: 'Microsoft.SQLServer.DTSRuntimeWrap.dll'
 
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Agent.TempDirectory)'
+    contents: 'Microsoft.SQLServer.DTSRuntimeWrap.dll'
+    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLibShape\bin\Release\'
 
 - task: DownloadSecureFile@1
   name: ManagedDTS
@@ -53,11 +64,23 @@ steps:
   inputs:
     secureFile: 'Microsoft.SQLServer.ManagedDTS.dll'
 
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Agent.TempDirectory)'
+    contents: 'Microsoft.SqlServer.PipelineHost.dll'
+    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLibShape\bin\Release\'
+
 - task: DownloadSecureFile@1
   name: PipelineHost
   displayName: 'Download Microsoft.SqlServer.PipelineHost.dll'
   inputs:
     secureFile: 'Microsoft.SqlServer.PipelineHost.dll'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Agent.TempDirectory)'
+    contents: 'Microsoft.SqlServer.PipelineHost.dll'
+    targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLibShape\bin\Release\'
 
 - task: VSBuild@1
   inputs:
