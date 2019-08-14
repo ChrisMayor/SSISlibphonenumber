@@ -28,6 +28,7 @@ steps:
     secureFile: 'Microsoft.SqlServer.Dts.Design.dll'
     
 - task: CopyFiles@2
+  displayName: 'Copy Microsoft.SqlServer.Dts.Design.dll'
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
     contents: 'Microsoft.SqlServer.Dts.Design.dll'
@@ -41,6 +42,7 @@ steps:
     secureFile: 'Microsoft.SqlServer.DTSPipelineWrap.dll'
 
 - task: CopyFiles@2
+  displayName: 'Copy Microsoft.SqlServer.DTSPipelineWrap.dll'
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
     contents: 'Microsoft.SqlServer.DTSPipelineWrap.dll'
@@ -53,6 +55,7 @@ steps:
     secureFile: 'Microsoft.SQLServer.DTSRuntimeWrap.dll'
 
 - task: CopyFiles@2
+  displayName: 'Copy Microsoft.SQLServer.DTSRuntimeWrap.dll'
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
     contents: 'Microsoft.SQLServer.DTSRuntimeWrap.dll'
@@ -65,9 +68,10 @@ steps:
     secureFile: 'Microsoft.SQLServer.ManagedDTS.dll'
 
 - task: CopyFiles@2
+  displayName: 'Copy Microsoft.SQLServer.ManagedDTS.dll'
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
-    contents: 'Microsoft.SqlServer.PipelineHost.dll'
+    contents: 'Microsoft.SQLServer.ManagedDTS.dll'
     targetFolder: '$(Build.SourcesDirectory)\SSISPhoneLibShape\bin\Release\'
 
 - task: DownloadSecureFile@1
@@ -77,6 +81,7 @@ steps:
     secureFile: 'Microsoft.SqlServer.PipelineHost.dll'
 
 - task: CopyFiles@2
+  displayName: 'Copy Microsoft.SqlServer.PipelineHost.dll'
   inputs:
     sourceFolder: '$(Agent.TempDirectory)'
     contents: 'Microsoft.SqlServer.PipelineHost.dll'
