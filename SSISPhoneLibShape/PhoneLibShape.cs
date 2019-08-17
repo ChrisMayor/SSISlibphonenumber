@@ -39,7 +39,7 @@ namespace SSISPhoneLibShape
 
             ComponentMetaData.Name = "SSIS libphonenumber";
             ComponentMetaData.Description = "A SSIS Data Flow Transformation Component to provide funtionality from Google lib phonenumbers csharp port.";
-            ComponentMetaData.ContactInfo = "ChrisMayor at Github"
+            ComponentMetaData.ContactInfo = "ChrisMayor at Github";
 
             base.RemoveAllInputsOutputsAndCustomProperties();
 
