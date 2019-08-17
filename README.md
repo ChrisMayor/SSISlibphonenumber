@@ -69,7 +69,7 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 
 ## Screenshots V0.3
 
-### UI Integration
+### UI Integration (currently only preview)
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V0.3_1.JPG" title="SSIS Dataflow with shape and UI V0.3">
 </p>
