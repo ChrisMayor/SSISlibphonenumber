@@ -37,6 +37,7 @@
             this.txtIso2Default = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.chkInputColumnISO = new System.Windows.Forms.CheckedListBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // chkInputColumn
@@ -69,7 +70,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(273, 444);
+            this.button1.Location = new System.Drawing.Point(296, 442);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 3;
@@ -121,11 +122,22 @@
             this.chkInputColumnISO.TabIndex = 8;
             this.chkInputColumnISO.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ChkInputColumnISO_ItemCheck);
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(12, 476);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(283, 13);
+            this.linkLabel1.TabIndex = 9;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "https://www.github.com/ChrisMayor/SSISlibphonenumber";
+            // 
             // SSISPhoneLibDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(640, 498);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.chkInputColumnISO);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtIso2Default);
@@ -136,7 +148,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chkInputColumn);
             this.Name = "SSISPhoneLibDialog";
-            this.Text = "SSISPhoneLibDialog";
+            this.Text = "SSIS libphonenumber";
             this.Load += new System.EventHandler(this.SSISPhoneLibDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -154,5 +166,6 @@
         private System.Windows.Forms.TextBox txtIso2Default;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckedListBox chkInputColumnISO;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

@@ -16,7 +16,7 @@ using System.Linq;
 namespace SSISPhoneLibShape
 {
 
-    [DtsPipelineComponent(DisplayName = "PhoneLibShape",
+    [DtsPipelineComponent(DisplayName = "SSIS libphonenumber",
     ComponentType = ComponentType.Transform,
     UITypeName = "SSISPhoneLibShape.SSISPhoneLibUi, SSISPhoneLibShape, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a232ba076cd66dc8")]
     public class PhoneLibShape : PipelineComponent
@@ -33,19 +33,13 @@ namespace SSISPhoneLibShape
         //Design time - constructor
         public override void ProvideComponentProperties()
         {
-            /*// Set component information
-            ComponentMetaData.Name = "PhoneLibShape";
-            ComponentMetaData.Description = "A SSIS Data Flow Transformation Component to provide funtionality from Google lib phonenumbers csharp port.";
-            ComponentMetaData.ContactInfo = "ChrisMayor at Github";
-
-
 
             // Add Null Default Table Name
             //Utility.AddProperty(ComponentMetaData.CustomPropertyCollection, "CustomProperties", "Custom Metadata Properties", string.Empty);*/
 
-            ComponentMetaData.Name = "PhoneLibShape";
+            ComponentMetaData.Name = "SSIS libphonenumber";
             ComponentMetaData.Description = "A SSIS Data Flow Transformation Component to provide funtionality from Google lib phonenumbers csharp port.";
-            ComponentMetaData.ContactInfo = "ChrisMayor at Github";
+            ComponentMetaData.ContactInfo = "ChrisMayor at Github"
 
             base.RemoveAllInputsOutputsAndCustomProperties();
 
