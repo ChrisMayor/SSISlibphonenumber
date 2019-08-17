@@ -32,9 +32,9 @@ namespace SSISPhoneLibShape
             var propertiesEditor = new SSISPhoneLibDialog();
             propertiesEditor.ComponentMetaData = _cmd;
             propertiesEditor.ServiceProvider = _sp;
-            ////propertiesEditor.Variables = variables;
+            propertiesEditor.Varibles = variables;
 
-            return true; // propertiesEditor.ShowDialog(parentWindow) == DialogResult.OK;
+            return propertiesEditor.ShowDialog(parentWindow) == DialogResult.OK;
         }
 
         public void Help(IWin32Window parentWindow)

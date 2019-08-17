@@ -28,40 +28,44 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.chkInputColumns = new System.Windows.Forms.CheckedListBox();
+            this.chkInputColumn = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtIso2Default = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chkInputColumnISO = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
-            // chkInputColumns
+            // chkInputColumn
             // 
-            this.chkInputColumns.FormattingEnabled = true;
-            this.chkInputColumns.Location = new System.Drawing.Point(30, 52);
-            this.chkInputColumns.Name = "chkInputColumns";
-            this.chkInputColumns.Size = new System.Drawing.Size(268, 364);
-            this.chkInputColumns.TabIndex = 0;
-            this.chkInputColumns.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ChkInputColumns_ItemCheck);
-            this.chkInputColumns.SelectedIndexChanged += new System.EventHandler(this.ChkInputColumns_SelectedIndexChanged);
+            this.chkInputColumn.FormattingEnabled = true;
+            this.chkInputColumn.Location = new System.Drawing.Point(30, 52);
+            this.chkInputColumn.Name = "chkInputColumn";
+            this.chkInputColumn.Size = new System.Drawing.Size(268, 364);
+            this.chkInputColumn.TabIndex = 0;
+            this.chkInputColumn.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ChkInputColumns_ItemCheck);
+            this.chkInputColumn.SelectedIndexChanged += new System.EventHandler(this.ChkInputColumns_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(135, 21);
+            this.label1.Location = new System.Drawing.Point(82, 21);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.Size = new System.Drawing.Size(146, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Input Column";
+            this.label1.Text = "Input Column (phone number)";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(439, 21);
+            this.label2.Location = new System.Drawing.Point(364, 21);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(82, 13);
+            this.label2.Size = new System.Drawing.Size(237, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Output Columns";
+            this.label2.Text = "Input column default country (ISO2 code eg. DE)";
             // 
             // button1
             // 
@@ -76,22 +80,61 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(451, 52);
+            this.label3.Location = new System.Drawing.Point(363, 341);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.Size = new System.Drawing.Size(184, 13);
             this.label3.TabIndex = 4;
-            this.label3.Text = "All results";
+            this.label3.Text = "If iso 2 country column is not selected";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(363, 359);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(238, 13);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "please specify default ISO 2 country code by text";
+            // 
+            // txtIso2Default
+            // 
+            this.txtIso2Default.Location = new System.Drawing.Point(479, 393);
+            this.txtIso2Default.Name = "txtIso2Default";
+            this.txtIso2Default.Size = new System.Drawing.Size(100, 20);
+            this.txtIso2Default.TabIndex = 6;
+            this.txtIso2Default.Text = "DE";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(363, 396);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(110, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "ISO 2 default country:";
+            // 
+            // chkInputColumnISO
+            // 
+            this.chkInputColumnISO.FormattingEnabled = true;
+            this.chkInputColumnISO.Location = new System.Drawing.Point(360, 52);
+            this.chkInputColumnISO.Name = "chkInputColumnISO";
+            this.chkInputColumnISO.Size = new System.Drawing.Size(256, 274);
+            this.chkInputColumnISO.TabIndex = 8;
+            this.chkInputColumnISO.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ChkInputColumnISO_ItemCheck);
             // 
             // SSISPhoneLibDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(640, 498);
+            this.Controls.Add(this.chkInputColumnISO);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtIso2Default);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.chkInputColumns);
+            this.Controls.Add(this.chkInputColumn);
             this.Name = "SSISPhoneLibDialog";
             this.Text = "SSISPhoneLibDialog";
             this.Load += new System.EventHandler(this.SSISPhoneLibDialog_Load);
@@ -102,10 +145,14 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckedListBox chkInputColumns;
+        private System.Windows.Forms.CheckedListBox chkInputColumn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtIso2Default;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckedListBox chkInputColumnISO;
     }
 }

@@ -16,8 +16,10 @@ namespace SSISPhoneLibShape
         public IDTSComponentMetaData100 ComponentMetaData { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
         private Dictionary<string, int> _columnInfo;
+        private Dictionary<string, int> _columnInfoIso;
         private bool _populatingList;
         private IDTSInputColumn100 _column;
+        public Microsoft.SqlServer.Dts.Runtime.Variables Varibles { get; set; } 
 
         public SSISPhoneLibDialog()
         {
@@ -27,8 +29,8 @@ namespace SSISPhoneLibShape
         private void SSISPhoneLibDialog_Load(object sender, EventArgs e)
         {
             
-            chkInputColumns.Visible = false;
-            chkInputColumns.Items.Clear();
+            chkInputColumn.Visible = false;
+            chkInputColumn.Items.Clear();
             IDTSVirtualInput100 virtualInput = ComponentMetaData.InputCollection[0].GetVirtualInput();
 
 
@@ -37,16 +39,25 @@ namespace SSISPhoneLibShape
             _populatingList = true;
             foreach (IDTSVirtualInputColumn100 virtualColumn in virtualInput.VirtualInputColumnCollection)
             {
-                int itemIndex = this.chkInputColumns.Items.Add(virtualColumn.Name);
-                chkInputColumns.SetItemChecked(itemIndex, virtualColumn.UsageType == DTSUsageType.UT_READWRITE);
+                int itemIndex = this.chkInputColumn.Items.Add(virtualColumn.Name);
+                chkInputColumn.SetItemChecked(itemIndex, virtualColumn.UsageType == DTSUsageType.UT_READWRITE);
                 _columnInfo.Add(virtualColumn.Name, virtualColumn.LineageID);
+            }
+
+            _columnInfoIso = new Dictionary<string, int>(virtualInput.VirtualInputColumnCollection.Count);
+
+            foreach (IDTSVirtualInputColumn100 virtualColumn in virtualInput.VirtualInputColumnCollection)
+            {
+                int itemIndex = this.chkInputColumnISO.Items.Add(virtualColumn.Name);
+                chkInputColumnISO.SetItemChecked(itemIndex, virtualColumn.UsageType == DTSUsageType.UT_READWRITE);
+                _columnInfoIso.Add(virtualColumn.Name, virtualColumn.LineageID);
             }
 
             //txtNullValuesTable.Text =
             //    ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value.ToString();
 
             _populatingList = false;
-            chkInputColumns.Visible = true;
+            chkInputColumn.Visible = true;
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -67,7 +78,7 @@ namespace SSISPhoneLibShape
 
             IDTSVirtualInput100 virtualInput = ComponentMetaData.InputCollection[0].GetVirtualInput();
 
-            int selectedItemLineageId = _columnInfo[(string)chkInputColumns.Items[e.Index]];
+            int selectedItemLineageId = _columnInfo[(string)chkInputColumn.Items[e.Index]];
             if (e.NewValue == CheckState.Checked)
             {
                 virtualInput.SetUsageType(selectedItemLineageId, DTSUsageType.UT_READWRITE);
@@ -82,9 +93,20 @@ namespace SSISPhoneLibShape
             }
         }
 
+
+
+        private void ChkInputColumnISO_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (_populatingList)
+            {
+                return;
+            }
+        }
+
+
         private void ChkInputColumns_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            // Currently not used
         }
     }
 }
