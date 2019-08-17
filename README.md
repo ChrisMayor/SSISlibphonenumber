@@ -67,6 +67,13 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
   <img src="../master/Screenshots/1_Capture_V0.2-3.JPG" title="SSIS Dataflow with shape V0.2">
 </p>
 
+## Screenshots V0.3
+
+### UI Integration
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V0.3-1.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
 ## Install Instructions:
 * Run gacinstall.com from bin/debug or bin/release --> Will install the shape and the signed phonelib assembly to GAC and adds the shape to SSIS
 * Use advanced editor on shape to map phone number input column
