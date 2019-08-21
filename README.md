@@ -52,12 +52,33 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
   <img src="../master/Screenshots/1_Capture_V0.2-3.JPG" title="SSIS Dataflow with shape V0.2">
 </p>
 
-## Screenshots V0.3
+## Screenshots V1
 
 ### UI Integration (currently only preview)
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.3_1.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_0.JPG" title="SSIS Dataflow with shape and UI V0.3">
 </p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_1.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_2.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_3.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_4.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
 
 ## Install Instructions:
 * Run gacinstall.com from bin/debug or bin/release --> Will install the shape and the signed phonelib assembly to GAC and adds the shape to SSIS
