@@ -30,7 +30,7 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * PreferredDomesticCarrierCode
 * GeoCoderDescription (GeoCoder)
 
-## Screenshots V1
+## Screenshots V1 (Visual Studio 2019 / SSIS Extension)
 
 ### SSIS Toolbox (Data Flow)
 <p align="center">
