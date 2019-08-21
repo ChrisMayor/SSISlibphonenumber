@@ -30,12 +30,6 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * PreferredDomesticCarrierCode
 * GeoCoderDescription (GeoCoder)
 
-## To do
-* Implement SSIS UI
-* Refactor
-* Release V1.0
-* Implement default country code input
-
 ## Work done:
 * Added Gac cmd script
 * Wrote a lot of code
@@ -44,6 +38,12 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * Prepared the SSIS UI
 * Implemented SSIS Shape
 * Added Azure DevOps Pipeline build
+* Implement SSIS UI
+* Refactor
+* Implement default country code input
+
+## To do
+* Release V1.0
 
 ## Screenshots V0.2
 
