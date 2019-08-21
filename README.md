@@ -16,8 +16,8 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * Can lookup the carrier code and offline geo location
 * Tested with Visual Studio 2019 SSIS Extension
 
-## Currently implemented functionality V0.2:
-* Ready to use - configuration with advanced editor (see screenshots)
+## Currently implemented functionality V1:
+* Ready to use - configuration with shape UI
 * Call to IsViablePhoneNumber to check if the phone number is viable
 * ExtractPossibleNumber
 * NormalizedNumber
@@ -30,53 +30,37 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * PreferredDomesticCarrierCode
 * GeoCoderDescription (GeoCoder)
 
-## To do
-* Implement SSIS UI
-* Refactor
-* Release V1.0
-* Implement default country code input
-
-## Work done:
-* Added Gac cmd script
-* Wrote a lot of code
-* Did tests in SSIS
-* Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
-* Prepared the SSIS UI
-* Implemented SSIS Shape
-* Added Azure DevOps Pipeline build
-
-## Screenshots V0.2
-
-### Configuration
-<p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.2-0.JPG" title="SSIS Dataflow with shape V0.2">
-</p>
-
-### Input Data
-<p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.2-1.JPG" title="SSIS Dataflow with shape V0.2">
-</p>
-
-### SSIS libphonenumber Output Columns (1)
-<p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.2-2.JPG" title="SSIS Dataflow with shape V0.2">
-</p>
-
-### SSIS libphonenumber Output Columns (2)
-<p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.2-3.JPG" title="SSIS Dataflow with shape V0.2">
-</p>
-
-## Screenshots V0.3
+## Screenshots V1
 
 ### UI Integration (currently only preview)
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V0.3_1.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_0.JPG" title="SSIS Dataflow with shape and UI V0.3">
 </p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_1.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_2.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_3.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
+### UI Integration (currently only preview)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_4.JPG" title="SSIS Dataflow with shape and UI V0.3">
+</p>
+
 
 ## Install Instructions:
 * Run gacinstall.com from bin/debug or bin/release --> Will install the shape and the signed phonelib assembly to GAC and adds the shape to SSIS
-* Use advanced editor on shape to map phone number input column
+* Use UI of shape for configuration
 
 ## Licenses:
 * From Goolgles libphonenumber and libphonenumber-csharp are preserved in git root as txt files
