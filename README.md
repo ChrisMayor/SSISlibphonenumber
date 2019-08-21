@@ -16,8 +16,8 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * Can lookup the carrier code and offline geo location
 * Tested with Visual Studio 2019 SSIS Extension
 
-## Currently implemented functionality V0.2:
-* Ready to use - configuration with advanced editor (see screenshots)
+## Currently implemented functionality V1:
+* Ready to use - configuration with shape UI
 * Call to IsViablePhoneNumber to check if the phone number is viable
 * ExtractPossibleNumber
 * NormalizedNumber
@@ -29,21 +29,6 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * HasCountryCode
 * PreferredDomesticCarrierCode
 * GeoCoderDescription (GeoCoder)
-
-## Work done:
-* Added Gac cmd script
-* Wrote a lot of code
-* Did tests in SSIS
-* Signed libphonenumber-csharp and added assembly to project (v8.10.16) in order to use the library in SSIS
-* Prepared the SSIS UI
-* Implemented SSIS Shape
-* Added Azure DevOps Pipeline build
-* Implement SSIS UI
-* Refactor
-* Implement default country code input
-
-## To do
-* Release V1.0
 
 ## Screenshots V0.2
 
