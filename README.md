@@ -37,7 +37,7 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
   <img src="../master/Screenshots/1_Capture_V1_0.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
 
-### UI Integration (currently only preview)
+### SSIS Data Flow sample
 <p align="center">
   <img src="../master/Screenshots/1_Capture_V1_1.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
