@@ -32,29 +32,34 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 
 ## Screenshots V1
 
-### UI Integration (currently only preview)
+### SSIS Toolbox (Data Flow)
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V1_0.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_0.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
 
 ### UI Integration (currently only preview)
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V1_1.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_1.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
 
-### UI Integration (currently only preview)
+### Shape UI Configuration
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V1_2.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_2.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
 
-### UI Integration (currently only preview)
+### Shape Input
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V1_3.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_3.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
 
-### UI Integration (currently only preview)
+### Shape Output (1)
 <p align="center">
-  <img src="../master/Screenshots/1_Capture_V1_4.JPG" title="SSIS Dataflow with shape and UI V0.3">
+  <img src="../master/Screenshots/1_Capture_V1_4.JPG" title="SSIS Dataflow with shape and UI V1">
+</p>
+
+### Shape Output (2)
+<p align="center">
+  <img src="../master/Screenshots/1_Capture_V1_5.JPG" title="SSIS Dataflow with shape and UI V1">
 </p>
 
 
