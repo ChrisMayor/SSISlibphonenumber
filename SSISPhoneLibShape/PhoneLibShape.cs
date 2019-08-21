@@ -18,6 +18,7 @@ namespace SSISPhoneLibShape
 
     [DtsPipelineComponent(DisplayName = "SSIS libphonenumber",
     ComponentType = ComponentType.Transform,
+    IconResource = "SSISPhoneLibShape.PhoneLibIcon.ico",
     UITypeName = "SSISPhoneLibShape.SSISPhoneLibUi, SSISPhoneLibShape, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a232ba076cd66dc8")]
     public class PhoneLibShape : PipelineComponent
     {
@@ -80,12 +81,12 @@ namespace SSISPhoneLibShape
             var phoneNumberLinage = ComponentMetaData.CustomPropertyCollection.New();
             phoneNumberLinage.Name = Constants.PhoneNumberLinageColumn;
             phoneNumberLinage.Description = "Phone number column lineage";
-            phoneNumberLinage.Value = null;
+            phoneNumberLinage.Value = -1;
 
             var phoneNumberIsoCodeLinage = ComponentMetaData.CustomPropertyCollection.New();
             phoneNumberIsoCodeLinage.Name = Constants.PhoneNumberIsoLinageColumn;
             phoneNumberIsoCodeLinage.Description = "Phone number iso column lineage";
-            phoneNumberIsoCodeLinage.Value = null;
+            phoneNumberIsoCodeLinage.Value = -1;
         }
 
         //Design time - Metadata Validataor
@@ -126,7 +127,7 @@ namespace SSISPhoneLibShape
             _phoneNumberIsoCode = GetCustomPropertyValue<string>(Constants.PhoneNumberIsoCodeColumn);
 
             // check configuration
-            if (default == _phonenumberLinage || (default == _phoneNumberIsoLinage && default == _phoneNumberIsoLinage))
+            if (-1 == _phonenumberLinage || (-1 == _phoneNumberIsoLinage && string.IsNullOrEmpty(_phoneNumberIsoCode)))
             {
                 return DTSValidationStatus.VS_NEEDSNEWMETADATA;
             }
