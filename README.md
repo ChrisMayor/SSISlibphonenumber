@@ -76,7 +76,7 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 
 ## Install Instructions:
 * Run gacinstall.com from bin/debug or bin/release --> Will install the shape and the signed phonelib assembly to GAC and adds the shape to SSIS
-* Use advanced editor on shape to map phone number input column
+* Use UI of shape for configuration
 
 ## Licenses:
 * From Goolgles libphonenumber and libphonenumber-csharp are preserved in git root as txt files
