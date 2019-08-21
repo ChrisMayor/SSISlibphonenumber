@@ -26,6 +26,7 @@ namespace SSISPhoneLibShape
         private int[] inputBufferColumnIndex;
         private int[] outputBufferColumnIndex;
         private int _outputId;
+        private int _errorOutId;
         private List<OutputColumn> _outputColumnList;
         private int _phonenumberLinage;
         private int _phoneNumberIsoLinage;
@@ -152,14 +153,16 @@ namespace SSISPhoneLibShape
                 GenerateOutputColumns(output, inputcolumn);
             }
 
+            var outputColumnToRemove = new List<int>();
             foreach (IDTSOutputColumn100 outputColumn in output.OutputColumnCollection)
             {
                 if (!_outputColumnList.Any(c => c.ColumnName == outputColumn.Name))
                 {
-                    output.OutputColumnCollection.RemoveObjectByID(outputColumn.ID);
+                    outputColumnToRemove.Add(outputColumn.ID);
+
                 }
             }
-
+            outputColumnToRemove.ForEach(o => output.OutputColumnCollection.RemoveObjectByID(o));
 
             return DTSValidationStatus.VS_ISVALID;
         }
@@ -205,7 +208,6 @@ namespace SSISPhoneLibShape
         //Run Time - Pre Execute identifying the input columns in this component from Buffer Manager
         public override void PreExecute()
         {
-            System.Diagnostics.Debugger.Launch();
             IDTSInput100 input = ComponentMetaData.InputCollection[0];
             inputBufferColumnIndex = new int[input.InputColumnCollection.Count];
             _phneNumberColumnInfo = new PhonenumberColumnInfo();
@@ -244,6 +246,15 @@ namespace SSISPhoneLibShape
 
             _outputId = output.ID;
 
+            foreach (IDTSOutput100 outputcoll in ComponentMetaData.OutputCollection)
+            {
+                if (outputcoll.IsErrorOut)
+                {
+                    _errorOutId = outputcoll.ID;
+                    break;
+                }
+            }
+
         }
 
         //Run Time - Validate Phone Number
@@ -253,15 +264,19 @@ namespace SSISPhoneLibShape
             {
                 while (buffer.NextRow())
                 {
-                    var phoneNumberColumnIndex = _phneNumberColumnInfo.PhoneNumberBufferIndex;
+                    try
+                    {
+                        var phoneNumberColumnIndex = _phneNumberColumnInfo.PhoneNumberBufferIndex;
+                        var bufferColDataType = buffer.GetColumnInfo(inputBufferColumnIndex[_phneNumberColumnInfo.PhoneNumberBufferIndex]).DataType;
+                        var parsedPhoneNumberResult = GetParsedPhoneNumberResult(buffer, phoneNumberColumnIndex, bufferColDataType);
+                        SetPhoneNumberResultValuesToOutput(buffer, phoneNumberColumnIndex, parsedPhoneNumberResult);
 
-                    var bufferColDataType = buffer.GetColumnInfo(inputBufferColumnIndex[_phneNumberColumnInfo.PhoneNumberBufferIndex]).DataType;
-
-                    var parsedPhoneNumberResult = GetParsedPhoneNumberResult(buffer, phoneNumberColumnIndex, bufferColDataType);
-
-                    SetPhoneNumberResultValuesToOutput(buffer, phoneNumberColumnIndex, parsedPhoneNumberResult);
-
-                    buffer.DirectRow(_outputId);
+                        buffer.DirectRow(_outputId);
+                    }
+                    catch (Exception e)
+                    {
+                        buffer.DirectErrorRow(_errorOutId, 100, _phonenumberLinage);
+                    }
 
                 }
             }
@@ -322,14 +337,19 @@ namespace SSISPhoneLibShape
 
         private ParsedPhoneNumber GetParsedPhoneNumberResult(PipelineBuffer buffer, int phonenumberColumnIndex, DataType BufferColDataType)
         {
-            var defaultIsoCode = string.Empty ;
+            var defaultIsoCode = string.Empty;
             if (_phneNumberColumnInfo.UsesIsoAsString)
             {
                 defaultIsoCode = _phneNumberColumnInfo.PhoneNumberIsoString;
             }
             else
             {
-                defaultIsoCode = buffer.GetString(_phneNumberColumnInfo.PhoneNumberIsoBufferIndex);
+                defaultIsoCode = buffer.GetString(inputBufferColumnIndex[_phneNumberColumnInfo.PhoneNumberIsoBufferIndex]);
+                // Fallback
+                if (string.IsNullOrEmpty(defaultIsoCode))
+                {
+                    defaultIsoCode = _phneNumberColumnInfo.PhoneNumberIsoString;
+                }
             }
 
             if (BufferColDataType == DataType.DT_STR ||

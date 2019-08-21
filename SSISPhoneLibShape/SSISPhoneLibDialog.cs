@@ -20,7 +20,6 @@ namespace SSISPhoneLibShape
         private Dictionary<string, int> _columnInfoIso;
         public int _selectedPhoneNumberIsoColumnLinage = -1;
         private bool _populatingList;
-        private IDTSInputColumn100 _column;
         public Microsoft.SqlServer.Dts.Runtime.Variables Varibles { get; set; }
 
         public SSISPhoneLibDialog()
@@ -33,9 +32,6 @@ namespace SSISPhoneLibShape
             chkInputColumn.Visible = false;
             chkInputColumn.Items.Clear();
             IDTSVirtualInput100 virtualInput = ComponentMetaData.InputCollection[0].GetVirtualInput();
-
-
-
 
             _populatingList = true;
 
@@ -61,6 +57,7 @@ namespace SSISPhoneLibShape
             if (ComponentMetaData.CustomPropertyCollection[Constants.PhoneNumberIsoLinageColumn] != null && ComponentMetaData.CustomPropertyCollection[Constants.PhoneNumberIsoLinageColumn].Value != null)
             {
                 lineageId = (int)ComponentMetaData.CustomPropertyCollection[Constants.PhoneNumberIsoLinageColumn].Value;
+                _selectedPhoneNumberIsoColumnLinage = lineageId.Value;
             }
 
             foreach (IDTSVirtualInputColumn100 virtualColumn in virtualInput.VirtualInputColumnCollection)
@@ -82,6 +79,7 @@ namespace SSISPhoneLibShape
             if (ComponentMetaData.CustomPropertyCollection[Constants.PhoneNumberLinageColumn] != null && ComponentMetaData.CustomPropertyCollection[Constants.PhoneNumberLinageColumn].Value != null)
             {
                 lineageId = (int)ComponentMetaData.CustomPropertyCollection[Constants.PhoneNumberLinageColumn].Value;
+                _selectedPhoneNumberColumnLinage = lineageId.Value;
             }
 
             foreach (IDTSVirtualInputColumn100 virtualColumn in virtualInput.VirtualInputColumnCollection)
@@ -111,10 +109,10 @@ namespace SSISPhoneLibShape
 
         private void ChkInputColumns_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            //if (_populatingList)
-            //{
-            //    return;
-            //}
+            if (_populatingList)
+            {
+                return;
+            }
 
             int selectedItemLineageId = _columnInfo[(string)chkInputColumn.Items[e.Index]];
             if (e.NewValue == CheckState.Checked)
@@ -144,10 +142,10 @@ namespace SSISPhoneLibShape
 
         private void ChkInputColumnISO_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            //if (_populatingList)
-            //{
-            //    return;
-            //}
+            if (_populatingList)
+            {
+                return;
+            }
 
 
             int selectedItemLineageId = _columnInfo[(string)chkInputColumnISO.Items[e.Index]];
