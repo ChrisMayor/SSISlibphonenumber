@@ -151,7 +151,10 @@ namespace SSISPhoneLibShape
 
             foreach (IDTSInputColumn100 inputcolumn in input.InputColumnCollection)
             {
-                GenerateOutputColumns(output, inputcolumn);
+                if (inputcolumn.LineageID == _phonenumberLinage)
+                {
+                    GenerateOutputColumns(output, inputcolumn);
+                }
             }
 
             var outputColumnToRemove = new List<int>();
