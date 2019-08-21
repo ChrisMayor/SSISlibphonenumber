@@ -77,6 +77,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="PhonenumberColumnInfo.cs" />
     <Compile Include="PhoneLibMethodConstants.cs" />
     <Compile Include="OutputColumn.cs" />
     <Compile Include="ParsedPhoneNumber.cs" />
@@ -89,7 +91,6 @@
       <DependentUpon>SSISPhoneLibDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="SSISPhoneLibUi.cs" />
-    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gacinstall.cmd">

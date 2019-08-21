@@ -27,15 +27,16 @@ namespace SSISPhoneLibShape
         private int[] outputBufferColumnIndex;
         private int _outputId;
         private List<OutputColumn> _outputColumnList;
+        private int _phonenumberLinage;
+        private int _phoneNumberIsoLinage;
+        private string _phoneNumberIsoCode;
+        private PhonenumberColumnInfo _phneNumberColumnInfo;
 
         #region Design Time Methods
 
         //Design time - constructor
         public override void ProvideComponentProperties()
         {
-
-            // Add Null Default Table Name
-            //Utility.AddProperty(ComponentMetaData.CustomPropertyCollection, "CustomProperties", "Custom Metadata Properties", string.Empty);*/
 
             ComponentMetaData.Name = "SSIS libphonenumber";
             ComponentMetaData.Description = "A SSIS Data Flow Transformation Component to provide funtionality from Google lib phonenumbers csharp port.";
@@ -67,6 +68,23 @@ namespace SSISPhoneLibShape
             errorOutput.HasSideEffects = false; // Determines if component is left in data flow when run in OptimizedMode and output is not connected
             errorOutput.SynchronousInputID = input.ID;
             errorOutput.ExclusionGroup = 1;
+
+            //Add Componentproperties
+
+            var iso2CountryText = ComponentMetaData.CustomPropertyCollection.New();
+            iso2CountryText.Name = Constants.PhoneNumberIsoCodeColumn;
+            iso2CountryText.Description = "Default Iso 2 Country Code";
+            iso2CountryText.Value = null;
+
+            var phoneNumberLinage = ComponentMetaData.CustomPropertyCollection.New();
+            phoneNumberLinage.Name = Constants.PhoneNumberLinageColumn;
+            phoneNumberLinage.Description = "Phone number column lineage";
+            phoneNumberLinage.Value = null;
+
+            var phoneNumberIsoCodeLinage = ComponentMetaData.CustomPropertyCollection.New();
+            phoneNumberIsoCodeLinage.Name = Constants.PhoneNumberIsoLinageColumn;
+            phoneNumberIsoCodeLinage.Description = "Phone number iso column lineage";
+            phoneNumberIsoCodeLinage.Value = null;
         }
 
         //Design time - Metadata Validataor
@@ -80,13 +98,6 @@ namespace SSISPhoneLibShape
                 ComponentMetaData.FireError(0, ComponentMetaData.Name, "Incorrect number of inputs.", "", 0, out pbCancel);
                 return DTSValidationStatus.VS_ISCORRUPT;
             }
-
-            // Validate number of outputs.
-            //if (ComponentMetaData.OutputCollection.Count != 1)
-            //{
-            //    ComponentMetaData.FireError(0, ComponentMetaData.Name, "Incorrect number of outputs.", "", 0, out pbCancel);
-            //    return DTSValidationStatus.VS_ISCORRUPT;
-            //}
 
             // Determine whether the metdada needs refresh
             IDTSInput100 input = ComponentMetaData.InputCollection[0];
@@ -109,14 +120,15 @@ namespace SSISPhoneLibShape
 
             }
 
-            //// Validate Metadata
-            //if (ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value == null ||
-            //        ComponentMetaData.CustomPropertyCollection["CustomProperties"].Value.ToString() == string.Empty)
-            //{
-            //    ComponentMetaData.FireError(0, string.Empty, "The NullDefaultTableName property must be set.", string.Empty, 0, out cancel);
-            //    cancel = true;
-            //    return DTSValidationStatus.VS_NEEDSNEWMETADATA;
-            //}
+            _phonenumberLinage = GetCustomPropertyValue<int>(Constants.PhoneNumberLinageColumn);
+            _phoneNumberIsoLinage = GetCustomPropertyValue<int>(Constants.PhoneNumberIsoLinageColumn);
+            _phoneNumberIsoCode = GetCustomPropertyValue<string>(Constants.PhoneNumberIsoCodeColumn);
+
+            // check configuration
+            if (default == _phonenumberLinage || (default == _phoneNumberIsoLinage && default == _phoneNumberIsoLinage))
+            {
+                return DTSValidationStatus.VS_NEEDSNEWMETADATA;
+            }
 
             //validate input to be of type string/numeric only
             for (int x = 0; x < input.InputColumnCollection.Count; x++)
@@ -193,13 +205,26 @@ namespace SSISPhoneLibShape
         //Run Time - Pre Execute identifying the input columns in this component from Buffer Manager
         public override void PreExecute()
         {
+            System.Diagnostics.Debugger.Launch();
             IDTSInput100 input = ComponentMetaData.InputCollection[0];
             inputBufferColumnIndex = new int[input.InputColumnCollection.Count];
+            _phneNumberColumnInfo = new PhonenumberColumnInfo();
+            _phneNumberColumnInfo.UsesIsoAsString = _phoneNumberIsoLinage == default;
+            _phneNumberColumnInfo.PhoneNumberIsoString = _phoneNumberIsoCode;
 
             for (int x = 0; x < input.InputColumnCollection.Count; x++)
             {
                 IDTSInputColumn100 column = input.InputColumnCollection[x];
                 inputBufferColumnIndex[x] = BufferManager.FindColumnByLineageID(input.Buffer, column.LineageID);
+
+                if (column.LineageID == _phonenumberLinage)
+                {
+                    _phneNumberColumnInfo.PhoneNumberBufferIndex = x;
+                }
+                else if (column.LineageID == _phoneNumberIsoLinage)
+                {
+                    _phneNumberColumnInfo.PhoneNumberIsoBufferIndex = x;
+                }
             }
 
             IDTSOutput100 output = ComponentMetaData.OutputCollection[0];
@@ -228,18 +253,16 @@ namespace SSISPhoneLibShape
             {
                 while (buffer.NextRow())
                 {
-                    for (int x = 0; x < inputBufferColumnIndex.Length; x++)
-                    {
-                        DataType BufferColDataType;
+                    var phoneNumberColumnIndex = _phneNumberColumnInfo.PhoneNumberBufferIndex;
 
-                        BufferColDataType = buffer.GetColumnInfo(inputBufferColumnIndex[x]).DataType;
+                    var bufferColDataType = buffer.GetColumnInfo(inputBufferColumnIndex[_phneNumberColumnInfo.PhoneNumberBufferIndex]).DataType;
 
-                        var parsedPhoneNumberResult = GetParsedPhoneNumberResult(buffer, x, BufferColDataType);
+                    var parsedPhoneNumberResult = GetParsedPhoneNumberResult(buffer, phoneNumberColumnIndex, bufferColDataType);
 
-                        SetPhoneNumberResultValuesToOutput(buffer, x, parsedPhoneNumberResult);
+                    SetPhoneNumberResultValuesToOutput(buffer, phoneNumberColumnIndex, parsedPhoneNumberResult);
 
-                        buffer.DirectRow(_outputId);
-                    }
+                    buffer.DirectRow(_outputId);
+
                 }
             }
 
@@ -297,18 +320,28 @@ namespace SSISPhoneLibShape
             }
         }
 
-        private ParsedPhoneNumber GetParsedPhoneNumberResult(PipelineBuffer buffer, int x, DataType BufferColDataType)
+        private ParsedPhoneNumber GetParsedPhoneNumberResult(PipelineBuffer buffer, int phonenumberColumnIndex, DataType BufferColDataType)
         {
+            var defaultIsoCode = string.Empty ;
+            if (_phneNumberColumnInfo.UsesIsoAsString)
+            {
+                defaultIsoCode = _phneNumberColumnInfo.PhoneNumberIsoString;
+            }
+            else
+            {
+                defaultIsoCode = buffer.GetString(_phneNumberColumnInfo.PhoneNumberIsoBufferIndex);
+            }
+
             if (BufferColDataType == DataType.DT_STR ||
                 BufferColDataType == DataType.DT_WSTR)
             {
-                return IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[x]));
+                return IsPhoneNumberValid(buffer.GetString(inputBufferColumnIndex[phonenumberColumnIndex]), defaultIsoCode);
             }
             else if (BufferColDataType == DataType.DT_NUMERIC ||
                     BufferColDataType == DataType.DT_DECIMAL)
             {
 
-                return IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[x]).ToString());
+                return IsPhoneNumberValid(buffer.GetDecimal(inputBufferColumnIndex[phonenumberColumnIndex]).ToString(), defaultIsoCode);
             }
 
             throw new Exception("Invaid DataType");
@@ -363,7 +396,7 @@ namespace SSISPhoneLibShape
         }
 
         //phonelib calls
-        public ParsedPhoneNumber IsPhoneNumberValid(string phoneNumber)
+        public ParsedPhoneNumber IsPhoneNumberValid(string phoneNumber, string defaultIsoCode)
         {
             var parsedNumber = new ParsedPhoneNumber();
             if (!string.IsNullOrEmpty(phoneNumber))
@@ -375,7 +408,7 @@ namespace SSISPhoneLibShape
                 parsedNumber.NormalizedDigitsOnly = PhoneNumberUtil.NormalizeDigitsOnly(phoneNumber);
                 if (parsedNumber.IsViablePhoneNumber.Value)
                 {
-                    var numberObject = phoneNumberUtil.Parse(phoneNumber, "DE");
+                    var numberObject = phoneNumberUtil.Parse(phoneNumber, defaultIsoCode);
                     parsedNumber.E164Format = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.E164);
                     parsedNumber.IntFormat = phoneNumberUtil.Format(numberObject, PhoneNumberFormat.INTERNATIONAL);
                     parsedNumber.IsValidNumber = phoneNumberUtil.IsValidNumber(numberObject);
@@ -389,6 +422,19 @@ namespace SSISPhoneLibShape
 
             return parsedNumber;
         }
+
+        private T GetCustomPropertyValue<T>(string propertyName)
+        {
+            if (ComponentMetaData.CustomPropertyCollection[propertyName] != null && ComponentMetaData.CustomPropertyCollection[propertyName].Value != null)
+            {
+                return (T)ComponentMetaData.CustomPropertyCollection[propertyName].Value;
+            }
+            else
+            {
+                return default(T);
+            }
+        }
+
 
 
 
