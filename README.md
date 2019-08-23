@@ -68,7 +68,7 @@ See Google libphonenumber web demo <a href="https://libphonenumber.appspot.com/"
 * Create/Open data flow
 * Drag SSIS libphonenumber shape from toolbox to data flow
 * Connect input and output
-* Use UI of shape for configuration
+* Use UI of shape for configuration (double-click on shape)
 * Run
 
 ## Licenses:
