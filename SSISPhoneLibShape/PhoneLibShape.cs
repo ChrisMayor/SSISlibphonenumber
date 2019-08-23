@@ -334,6 +334,9 @@ namespace SSISPhoneLibShape
                     case PhoneLibMethodConstants.PreferredDomesticCarrierCode:
                         buffer.SetString(colindex, parsedPhoneNumberResult.PreferredDomesticCarrierCode);
                         break;
+                    case PhoneLibMethodConstants.NumberType:
+                        buffer.SetString(colindex, parsedPhoneNumberResult.NumberType);
+                        break;
                 }
 
             }
@@ -417,6 +420,7 @@ namespace SSISPhoneLibShape
             _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_HasCountryCode " + inputcolumn.Name, DataType = DataType.DT_BOOL, DataTypeLength = 0, Name = PhoneLibMethodConstants.HasCountryCode });
             _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_PreferredDomesticCarrierCode " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.PreferredDomesticCarrierCode });
             _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_GeoCoderDescription " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.GeoCoderDescription });
+            _outputColumnList.Add(new OutputColumn { ColumnName = $"PhoneLib_NumberType " + inputcolumn.Name, DataType = DataType.DT_WSTR, DataTypeLength = 255, Name = PhoneLibMethodConstants.NumberType });
         }
 
         //phonelib calls
@@ -441,6 +445,7 @@ namespace SSISPhoneLibShape
                     parsedNumber.PreferredDomesticCarrierCode = numberObject.PreferredDomesticCarrierCode;
                     var geocoder = PhoneNumbers.PhoneNumberOfflineGeocoder.GetInstance();
                     parsedNumber.GeoCoderDescription = geocoder.GetDescriptionForNumber(numberObject, PhoneNumbers.Locale.English);
+                    parsedNumber.NumberType = phoneNumberUtil.GetNumberType(numberObject).ToString();
                 }
             }
 

@@ -23,6 +23,7 @@ namespace SSISPhoneLibShape
 
         public const string PreferredDomesticCarrierCode = "PreferredDomesticCarrierCode";
         public const string GeoCoderDescription = "GeoCoderDescription";
+        public const string NumberType = "NumberType";
 
 
     }

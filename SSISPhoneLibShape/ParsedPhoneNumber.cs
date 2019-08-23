@@ -30,5 +30,7 @@ namespace SSISPhoneLibShape
 
             public string GeoCoderDescription { get; set; }
 
+            public string NumberType { get; set; }
+
     }
 }
